@@ -52,16 +52,18 @@ PipeQiime2Meta_Step3.sh Demo_Metadata.tsv 4000 GTTYGATYMTGGCTCAG GCWGCCWCCCGTAGG
 
 Output examples:
 
-1, MultiQC report: multiqc_report.html
-
-2, Alpha rarefaction
+1, Alpha rarefaction
 
 ![image](Demo/images/Rarefaction.png)
 
-3, PCA
+2, PCA
 
 ![image](Demo/images/PCA.png)
 
-4, Classification
+3, Classification
 
 ![image](Demo/images/Classification.png)
+
+4, Other outputs:
+
+See ./Demo folder for more outputs. The .qzv files can be visualized at: https://view.qiime2.org/. The three Log files are pipeline standard outputs.
