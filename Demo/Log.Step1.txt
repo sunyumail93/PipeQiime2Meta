@@ -1,0 +1,20 @@
+*****************************************************************
+*  PipeQiime2Meta.sh: Pipeline for Qiime2 metagenomic analysis  *
+*       Part 1 of the pipeline: importing data and QC           *
+*****************************************************************
+1. Staring Qiime2 pipeline
+   Loading Qiime2
+   Data Folder Name: data
+   Output Data Prefix: Demo_data
+
+2. Importing data
+   qiime tools import --type SampleData[PairedEndSequencesWithQuality] --input-path data --input-format CasavaOneEightSingleLanePerSampleDirFmt --output-path Demo_data.qza
+Imported data as CasavaOneEightSingleLanePerSampleDirFmt to Demo_data.qza
+
+3. Summarizing data for QC
+   qiime demux summarize --i-data Demo_data.qza --o-visualization Demo_data
+Saved Visualization to: Demo_data.qzv
+
+4. Done PipeQiime2Meta Part1
+   Qiime2 visualization: https://view.qiime2.org/
+   See output: Demo_data.qzv

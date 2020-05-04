@@ -1,0 +1,67 @@
+**********************************************************************
+*     PipeQiime2Meta.sh: Pipeline for Qiime2 metagenomic analysis    *
+* Part 3 of the pipeline: Diversity analysis, Rarefaction, Taxonomy  *
+**********************************************************************
+Continuing Part 2.....
+9. Diversity core analysis
+   Loading Qiime2
+   Output Data Prefix: Demo_data
+   Metadata File: Demo_Metadata.tsv
+   Sampling Depth: 4000
+   Primer F: GTTYGATYMTGGCTCAG
+   Primer R: GCWGCCWCCCGTAGGWGT
+   qiime diversity core-metrics-phylogenetic --i-phylogeny Demo_rooted_tree.qza --i-table Demo_table.qza --p-sampling-depth 4000 --m-metadata-file Demo_Metadata.tsv --output-dir Demo_core_metrics_results
+Saved FeatureTable[Frequency] to: Demo_core_metrics_results/rarefied_table.qza
+Saved SampleData[AlphaDiversity] % Properties('phylogenetic') to: Demo_core_metrics_results/faith_pd_vector.qza
+Saved SampleData[AlphaDiversity] to: Demo_core_metrics_results/observed_otus_vector.qza
+Saved SampleData[AlphaDiversity] to: Demo_core_metrics_results/shannon_vector.qza
+Saved SampleData[AlphaDiversity] to: Demo_core_metrics_results/evenness_vector.qza
+Saved DistanceMatrix % Properties('phylogenetic') to: Demo_core_metrics_results/unweighted_unifrac_distance_matrix.qza
+Saved DistanceMatrix % Properties('phylogenetic') to: Demo_core_metrics_results/weighted_unifrac_distance_matrix.qza
+Saved DistanceMatrix to: Demo_core_metrics_results/jaccard_distance_matrix.qza
+Saved DistanceMatrix to: Demo_core_metrics_results/bray_curtis_distance_matrix.qza
+Saved PCoAResults to: Demo_core_metrics_results/unweighted_unifrac_pcoa_results.qza
+Saved PCoAResults to: Demo_core_metrics_results/weighted_unifrac_pcoa_results.qza
+Saved PCoAResults to: Demo_core_metrics_results/jaccard_pcoa_results.qza
+Saved PCoAResults to: Demo_core_metrics_results/bray_curtis_pcoa_results.qza
+Saved Visualization to: Demo_core_metrics_results/unweighted_unifrac_emperor.qzv
+Saved Visualization to: Demo_core_metrics_results/weighted_unifrac_emperor.qzv
+Saved Visualization to: Demo_core_metrics_results/jaccard_emperor.qzv
+Saved Visualization to: Demo_core_metrics_results/bray_curtis_emperor.qzv
+
+10. Alpha diversity analysis visualization
+   qiime diversity alpha-group-significance --i-alpha-diversity Demo_core_metrics_results/faith_pd_vector.qza --m-metadata-file Demo_Metadata.tsv --o-visualization Demo_core_metrics_results/faith_pd_group_significance
+Saved Visualization to: Demo_core_metrics_results/faith_pd_group_significance.qzv
+
+11. Alpha rarefaction plots: plateau plot
+   qiime diversity alpha-rarefaction --i-table Demo_core_metrics_results/rarefied_table.qza --p-max-depth 4000 --m-metadata-file Demo_Metadata.tsv --p-steps 25 --o-visualization Demo_alpha_rarefaction.qzv
+Saved Visualization to: Demo_alpha_rarefaction.qzv
+
+12. Import 16S and taxonomy data from SILVA32_99
+   qiime tools import --type 'FeatureData[Sequence]' --input-path /usr/bin/silva_132_99_16S.fna --output-path Demo_silva32
+   qiime tools import --type 'FeatureData[Taxonomy]' --input-path /usr/bin/taxonomy_7_levels.txt --input-format HeaderlessTSVTaxonomyFormat --output-path Demo_taxonomy_ref
+Imported /usr/bin/silva_132_99_16S.fna as DNASequencesDirectoryFormat to Demo_silva32
+Imported /usr/bin/taxonomy_7_levels.txt as HeaderlessTSVTaxonomyFormat to Demo_taxonomy_ref
+
+13. Extract reads and train the classifier
+   This step is time consuming
+   qiime feature-classifier extract-reads --i-sequences Demo_silva32.qza --p-f-primer GTTYGATYMTGGCTCAG --p-r-primer GCWGCCWCCCGTAGGWGT --p-trunc-len 300 --o-reads Demo_ref_seqs
+Saved FeatureData[Sequence] to: Demo_ref_seqs.qza
+   This step is also time consuming
+   qiime feature-classifier fit-classifier-naive-bayes --i-reference-reads Demo_ref_seqs.qza --i-reference-taxonomy Demo_taxonomy_ref.qza --o-classifier Demo_classifier.qza
+Saved TaxonomicClassifier to: Demo_classifier.qza
+
+14. Assign taxonomy
+   qiime feature-classifier classify-sklearn --i-classifier Demo_classifier.qza --i-reads Demo_rep_seqs.qza --o-classification Demo_taxonomy.qza
+   qiime metadata tabulate --m-input-file Demo_taxonomy.qza --o-visualization Demo_taxonomy
+Saved FeatureData[Taxonomy] to: Demo_taxonomy.qza
+Saved Visualization to: Demo_taxonomy.qzv
+
+15. Bar plot with taxonomy, after classification
+   qiime taxa barplot --i-table Demo_core_metrics_results/rarefied_table.qza --i-taxonomy Demo_taxonomy.qza --m-metadata-file Demo_Metadata.tsv --o-visualization Demo_taxa_bar_plots
+Saved Visualization to: Demo_taxa_bar_plots.qzv
+[Done Step 3 workflow]
+   Output folder: Demo_core_metrics_results
+   Output files: Demo_alpha_rarefaction.qzv, Demo_ref_seqs, Demo_classifier.qza
+   Output files: Demo_taxonomy.qza, Demo_taxa_bar_plots.qzv
+   Qiime2 visualization: https://view.qiime2.org/

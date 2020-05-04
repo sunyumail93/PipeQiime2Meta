@@ -1,0 +1,58 @@
+**********************************************************************
+*     PipeQiime2Meta.sh: Pipeline for Qiime2 metagenomic analysis    *
+* Part 2 of the pipeline: DATA2, feature-table, alignment, phylogeny *
+**********************************************************************
+Continuing Part 1.....
+5. Running DATA2 denoising
+   Loading Qiime2
+   Data Folder Name: data
+   Output Data Prefix: Demo_data
+   Left keep length: 270
+   Right keep length: 250
+   Left trim length: 0
+   Right trim length: 0
+   This step takes long time...
+   qiime dada2 denoise-paired --i-demultiplexed-seqs Demo_data.qza --p-trunc-len-f 270 --p-trunc-len-r 250 --p-trim-left-f 0 --p-trim-left-r 0 --o-table Demo_table.qza --o-representative-sequences Demo_rep_seqs.qza --o-denoising-stats Demo_denoising_stats.qza --verbose --p-n-threads 0
+R version 3.5.1 (2018-07-02) 
+DADA2: 1.10.0 / Rcpp: 1.0.1 / RcppParallel: 4.4.2 
+1) Filtering ......
+2) Learning Error Rates
+28078380 total bases in 103994 reads from 6 samples will be used for learning the error rates.
+25998500 total bases in 103994 reads from 6 samples will be used for learning the error rates.
+3) Denoise remaining samples ......
+4) Remove chimeras (method = consensus)
+6) Write output
+Running external command line application(s). This may print messages to stdout and/or stderr.
+The command(s) being run are below. These commands cannot be manually re-run as they will depend on temporary files that no longer exist.
+
+Command: run_dada_paired.R /local_scratch/14240517/tmpa2qsbtwz/forward /local_scratch/14240517/tmpa2qsbtwz/reverse /local_scratch/14240517/tmpa2qsbtwz/output.tsv.biom /local_scratch/14240517/tmpa2qsbtwz/track.tsv /local_scratch/14240517/tmpa2qsbtwz/filt_f /local_scratch/14240517/tmpa2qsbtwz/filt_r 270 250 0 0 2.0 2 consensus 1.0 0 1000000
+
+Saved FeatureTable[Frequency] to: Demo_table.qza
+Saved FeatureData[Sequence] to: Demo_rep_seqs.qza
+Saved SampleData[DADA2Stats] to: Demo_denoising_stats.qza
+
+6. Summarizing Feature Table, with Metatable.csv file
+   qiime feature-table summarize --i-table Demo_table.qza --o-visualization Demo_table --m-sample-metadata-file Demo_Metadata.tsv
+   qiime feature-table tabulate-seqs --i-data Demo_rep_seqs.qza --o-visualization Demo_rep_seqs
+   qiime metadata tabulate --m-input-file Demo_denoising_stats.qza --o-visualization Demo_denoising_stats
+Saved Visualization to: Demo_table.qzv
+Saved Visualization to: Demo_rep_seqs.qzv
+Saved Visualization to: Demo_denoising_stats.qzv
+
+7. Alignment
+   qiime alignment mafft --i-sequences Demo_rep_seqs.qza --o-alignment Demo_aligned_rep_seqs
+   qiime alignment mask --i-alignment Demo_aligned_rep_seqs.qza --o-masked-alignment Demo_masked_aligned_rep_seqs.qza
+Saved FeatureData[AlignedSequence] to: Demo_aligned_rep_seqs.qza
+Saved FeatureData[AlignedSequence] to: Demo_masked_aligned_rep_seqs.qza
+
+8. Phylogeny
+   qiime phylogeny fasttree --i-alignment Demo_masked_aligned_rep_seqs.qza --o-tree Demo_unrooted_tree
+   qiime phylogeny midpoint-root --i-tree Demo_unrooted_tree.qza --o-rooted-tree Demo_rooted_tree
+Saved Phylogeny[Unrooted] to: Demo_unrooted_tree.qza
+Saved Phylogeny[Rooted] to: Demo_rooted_tree.qza
+
+[Done Step 2 workflow]
+   Output files: Demo_table.qza/qzv, Demo_rep_seqs.qza/qzv, Demo_denoising_stats.qza/qzv
+   Output files: Demo_aligned_rep_seqs.qza, Demo_masked_aligned_rep_seqs.qza
+   Output files: Demo_unrooted_tree.qza/qzv, Demo_rooted_tree.qza/qzv
+   Qiime2 visualization: https://view.qiime2.org/
