@@ -3,7 +3,7 @@ A pipeline for Qiime2 metagenomics analysis
 
 ## PipeQiime2Meta_Prepare.sh
 
-To run the workflow, two database files need to be downloaded and saved in the ./bin folder. This can be automatically achieved by running the PipeQiime2Meta_Prepare.sh. This script required `wget`, `unzip`.
+To run the workflow, two database files need to be downloaded and saved in the ./bin folder. This can be automatically achieved by running the PipeQiime2Meta_Prepare.sh. This script requires `wget`, `unzip`.
 
 ```
 [Usage]: PipeQiime2Meta_Prepare.sh [Anything_not_empty]
@@ -42,13 +42,12 @@ This script requires an input number of SamplingDepth, which should be smaller t
 ```
 ## Example inputs and outputs
 
-First prepare the original data (./Demo/data) in fastq.gz format. Then prepare the MetaTable.csv file for detail information.
+First prepare the original data (./Demo/data) in fastq.gz format, and saved into the path ./data. Then prepare the MetaTable.csv file for detail information. Before running Step3, check the non-chimeric reads and set it to 4000
 
 ```
 PipeQiime2Meta_Step1.sh data Demo
 PipeQiime2Meta_Step2.sh data Demo_Metadata.tsv Demo
 PipeQiime2Meta_Step3.sh Demo_Metadata.tsv 4000 GTTYGATYMTGGCTCAG GCWGCCWCCCGTAGGWGT Demo
-
 ```
 
 Output examples:
@@ -66,6 +65,3 @@ Output examples:
 4, Classification
 
 ![image](Demo/images/Classification.png)
-
-
-
